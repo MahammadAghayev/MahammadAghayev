@@ -24,7 +24,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-@qgmmk!m-m$f*^$6!=+#h!v1yp%*-fa%^5)aeue&1@qyj5rn^2'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get("DEBUG", False) == "False"
+DEBUG = os.environ.get("DEBUG", False) != "False"
 PROD = not DEBUG
 
 ALLOWED_HOSTS = ["*"]
@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "product.apps.ProductConfig",
     "order.apps.OrderConfig",
     "modeltranslation",
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -151,7 +152,7 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = "static/"
 if PROD:
     STATIC_ROOT = os.path.join(BASE_DIR, "static")
 else:

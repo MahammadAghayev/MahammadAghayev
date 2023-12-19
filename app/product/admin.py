@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Category, Product, ProductItem, ProductType, Color, Size, Brand
+from .models import Category, Product, ProductItem, ProductType, Color, Size, Brand, Comment
 # Register your models here.
 
 class InlineSizeAdmin(admin.TabularInline):
@@ -22,3 +22,4 @@ admin.site.register(Product)
 admin.site.register(ProductItem)
 admin.site.register(Brand)
 # admin.site.register(Size)
+admin.site.register(Comment)
