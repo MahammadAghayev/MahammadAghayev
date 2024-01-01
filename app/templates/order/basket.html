@@ -1,0 +1,137 @@
+{% extends "base/index.html" %}
+{% load static i18n %}
+
+{% block css %}
+<style>
+    /* Container for the quantity input and buttons */
+        .quantity-container {
+            display: contents;
+            flex-direction: column;
+            align-items: center;
+            width: 50px; /* Adjust the width as needed */
+            border: 2px solid #ccc;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        /* Style for the minus and plus buttons */
+        .quantity-button {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        /* Hover effect for buttons */
+        .quantity-button:hover {
+            background-color: #45a049;
+        }
+
+        /* Style for the quantity input */
+        .quantity-input {
+            width: 40px;
+            height: 30px;
+            text-align: center;
+            border: none;
+            background-color: #f1f1f1;
+            border-radius: 5px;
+        }
+</style>
+{% endblock %}
+
+{% block content %}
+    <!-- Page Header Start -->
+    <div class="container-fluid bg-secondary mb-5">
+        <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
+            <h1 class="font-weight-semi-bold text-uppercase mb-3">Shopping Cart</h1>
+            <div class="d-inline-flex">
+                <p class="m-0"><a href="">Home</a></p>
+                <p class="m-0 px-2">-</p>
+                <p class="m-0">Shopping Cart</p>
+            </div>
+        </div>
+    </div>
+    <!-- Page Header End -->
+
+
+    <!-- Cart Start -->
+    <div class="container-fluid pt-5">
+        <div class="row px-xl-5">
+            <div class="col-lg-8 table-responsive mb-5">
+                <table class="table table-bordered text-center mb-0">
+                    <thead class="bg-secondary text-dark">
+                        <tr>
+                            <th>Products</th>
+                            <th>Price</th>
+                            <th>Quantity</th>
+                            <th>Total</th>
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody class="align-middle">
+                        {% for item in items %}
+                            <tr id="{{ item.id }}" name="product-items">
+                                <td class="align-middle"><img src="{{ item.product.image.url }}" alt="" style="width: 50px; left: -15% !important;"> {{ item.product.name }}</td>
+                                <td class="align-middle"><span id="price-{{ item.id }}">{{ item.product.price }}</span> AZN</td>
+                                <td class="align-middle">
+                                    <div class="quantity-container">
+                                        <button style="border-radius: 7px;" class="quantity-button" id="minus-button-{{ item.id }}" onclick="calcMinusTotal('{{ item.id }}')">-</button>
+                                        <input type="number" class="quantity-input" id="qty-{{ item.id }}" value="{{ item.quantity }}">
+                                        <button style="border-radius: 7px;" class="quantity-button" id="plus-button-{{ item.id }}" onclick="calcPlusTotal('{{ item.id }}')">+</button>
+                                    </div>
+                                </td>
+                                <td class="align-middle"><span name="order-total" id="total-{{ item.id }}">{{ item.get_total_price }}</span> AZN</td>
+                                <td class="align-middle"><button onclick="removeRow('#{{ item.id }}', '{{ item.id }}')" class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="col-lg-4">
+                <form class="mb-5" action="">
+                    <div class="input-group">
+                        <input type="text" class="form-control p-4" placeholder="Coupon Code">
+                        <div class="input-group-append">
+                            <button class="btn btn-primary">Apply Coupon</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="card border-secondary mb-5">
+                    <div class="card-header bg-secondary border-0">
+                        <h4 class="font-weight-semi-bold m-0">Cart Summary</h4>
+                    </div>
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between mb-3 pt-1">
+                            <h6 class="font-weight-medium">Subtotal</h6>
+                            <h6 class="font-weight-medium"><span id="sub-total">0</span> AZN</h6>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <h6 class="font-weight-medium">Shipping</h6>
+                            <h6 class="font-weight-medium"><span id='shipping'>0</span> AZN</h6>
+                        </div>
+                    </div>
+                    <div class="card-footer border-secondary bg-transparent">
+                        <div class="d-flex justify-content-between mt-2">
+                            <h5 class="font-weight-bold">Total</h5>
+                            <h5 class="font-weight-bold"><span id="final-total">0</span> AZN</h5>
+                        </div>
+                        <button id="checkout-btn" onclick="createOrder()" class="btn btn-block btn-primary my-3 py-3">Proceed To Checkout</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Cart End -->
+{% endblock %}
+
+{% block js %}
+<script>
+    let order_delete_url = "{% url 'delete-product-item' 1 %}"
+    document.addEventListener("DOMContentLoaded", function(event) {
+        calcTotal();
+    });
+</script>
+<script src="{% static 'apps/order/basket.js' %}"></script>
+{% endblock %}
